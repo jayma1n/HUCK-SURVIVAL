@@ -1,6 +1,7 @@
 import pygame
 import random as rm
 import os, os.path
+import math
 import time
 from classes import Survivor
 from classes import Companion
@@ -60,11 +61,46 @@ sand_tile_scaled = pygame.transform.scale(sand_tile_rotated, (block_size,block_s
 water_tile = pygame.image.load(os.path.join("assets", "water tile.png"))
 water_tile_scaled = pygame.transform.scale(water_tile, (block_size,block_size))
 mouse_box = Mouse_hit_box()
+
 def mouse_circle():
-    mouse_hit = pygame.draw.circle(screen, RED, (pygame.mouse.get_pos()), 10)
-    if enemy.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+    # Define the area around the player within which the mouse can move
+    area_radius = 50  # Radius of the allowed area around the player
+
+    player_center_x = Player_Char.rect.centerx
+    player_center_y = Player_Char.rect.centery
+
+    mouse_pos = pygame.mouse.get_pos()
+    mouse_x, mouse_y = mouse_pos
+    distance_x = mouse_x - player_center_x
+    distance_y = mouse_y - player_center_y
+    angle = math.atan2(distance_y, distance_x)
+    x = player_center_x + area_radius * math.cos(angle)
+    y = player_center_y + area_radius * math.sin(angle)
+
+    mouse_pos = pygame.mouse.get_pos()
+    mouse_x, mouse_y = mouse_pos
+
+    # Calculate the distance from the player center to the mouse position
+    distance_x = mouse_x - player_center_x
+    distance_y = mouse_y - player_center_y
+
+    # Clamp the mouse position within the defined radius around the player
+    if distance_x**2 + distance_y**2 > area_radius**2:
+        angle = math.atan2(distance_y, distance_x)
+        x = player_center_x + area_radius * math.cos(angle)
+        y = player_center_y + area_radius * math.sin(angle)
+    else:
+        mouse_x = mouse_x
+        mouse_y = mouse_y
+    pygame.mouse.set_visible(False)
+
+    mouse_hit = pygame.draw.circle(screen, RED, (int(x), int(y)), 10)
+    if enemy.rect.collidepoint((int(x), int(y))) and pygame.mouse.get_pressed()[0]:
         enemy.rect.x = rm.choice(pointsx)
         enemy.rect.y = rm.choice(pointsy)
+
+    #pygame.mouse.set_visible(False)
+
 mouse_sprites = pygame.sprite.Group()
 mouse_sprites.add(mouse_box)
 player_image_path = os.path.join("assets", "HUCK.png")
