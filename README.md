@@ -1,0 +1,1 @@
+HELLO wonderful users I have constructed a small but slightly fun game (Its not done yet don't go acting like it) I am still working on the attaking and stuf but I need more time to this file is currently a work in proggress and will hopefully be done by 2026 with infinate terain and a fun new combat system next update coming soon.
